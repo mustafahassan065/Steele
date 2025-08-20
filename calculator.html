@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie Calculator | Coached by Steele</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'title': ['Bebas Neue', 'cursive'],
+                        'sans': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'steel-blue': '#4A90E2',
+                        'steel-gold': '#F4C430',
+                        'steel-dark': '#1A2332',
+                        'steel-navy': '#2C3E50',
+                        'steel-light': '#6AB7FF'
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'scale-in': 'scaleIn 0.5s ease-out',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'pulse-gold': 'pulseGold 2s ease-in-out infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        @keyframes glow {
+            from { box-shadow: 0 0 20px rgba(244, 196, 48, 0.3); }
+            to { box-shadow: 0 0 30px rgba(244, 196, 48, 0.6); }
+        }
+        @keyframes pulseGold {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #F4C430, #4A90E2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .glass-effect {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        .observer-fade {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        .observer-fade.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .steel-gradient {
+            background: linear-gradient(135deg, #1A2332 0%, #2C3E50 50%, #4A90E2 100%);
+        }
+        .logo-container {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #1A2332, #4A90E2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .logo-figure {
+            width: 50px;
+            height: 50px;
+            position: relative;
+        }
+        .form-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #F4C430;
+            box-shadow: 0 0 0 2px rgba(244, 196, 48, 0.3);
+        }
+        .form-textarea {
+            min-height: 150px;
+        }
+        .result-card {
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.2), rgba(244, 196, 48, 0.2));
+            border: 1px solid rgba(244, 196, 48, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-steel-dark via-steel-navy to-steel-blue overflow-x-hidden text-white">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass-effect animate-fade-in">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-4">
+                    <div class="logo-container animate-pulse-gold">
+                        <svg class="logo-figure" viewBox="0 0 100 100" fill="none">
+                           <img src="steele2.jfif">
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="font-title text-2xl font-bold text-steel-gold">
+                            COACHED BY STEELE
+                        </div>
+                        <div class="text-xs text-steel-light font-semibold tracking-wider">
+                            EST. MMXX
+                        </div>
+                    </div>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="text-white hover:text-steel-gold transition-colors font-medium">Home</a>
+                    <a href="index.html#about" class="text-white hover:text-steel-gold transition-colors font-medium">About</a>
+                    <a href="index.html#services" class="text-white hover:text-steel-gold transition-colors font-medium">Services</a>
+                    <a href="testinomials.html" class="text-white hover:text-steel-gold transition-colors font-medium">Testimonials</a>
+                    <a href="calculator.html" class="text-steel-gold font-medium">Calorie Calculator</a>
+                    <a href="index.html#contact" class="text-white hover:text-steel-gold transition-colors font-medium">Contact</a>
+                </div>
+                <button class="md:hidden text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
+        <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/70 z-10"></div>
+        <img src="https://images.unsplash.com/photo-1535914254981-b5012eebbd15?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
+             alt="Nutrition calculator" 
+             class="absolute inset-0 w-full h-full object-cover">
+        
+        <div class="relative z-20 text-center max-w-4xl mx-auto px-4 animate-slide-up">
+            <div class="logo-container mx-auto mb-6 animate-float" style="width: 120px; height: 120px;">
+                <svg class="logo-figure" style="width: 80px; height: 80px;" viewBox="0 0 100 100" fill="none">
+                    <img src="steele2.jfif">
+                </svg>
+            </div>
+            
+            <h1 class="font-title text-6xl md:text-8xl font-bold text-white mb-4 leading-tight drop-shadow-2xl">
+                CALORIE <span class="text-steel-gold drop-shadow-lg">CALCULATOR</span>
+            </h1>
+            <p class="text-2xl md:text-3xl text-steel-gold mb-8 font-bold drop-shadow-xl bg-black/30 px-8 py-4 rounded-full backdrop-blur-sm">
+                Calculate Your Daily Caloric Needs
+            </p>
+        </div>
+    </section>
+
+    <!-- Calculator Section -->
+    <section class="py-20 steel-gradient">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-steel-blue/10 p-8 rounded-2xl shadow-lg hover-lift border border-steel-gold/20">
+                <h2 class="font-title text-4xl md:text-5xl font-bold mb-8 text-center text-steel-gold">
+                    PERSONALIZED CALORIE CALCULATION
+                </h2>
+                
+                <form id="calorie-form" class="observer-fade">
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <label class="block text-gray-300 mb-2">Gender</label>
+                            <select class="form-input bg-steel-navy"  id="gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-2">Age</label>
+                            <input type="number" class="form-input bg-steel-navy" id="age" placeholder="Years" min="15" max="100" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-2">Height</label>
+                            <div class="flex">
+                                <input type="number" class="form-input bg-steel-navy rounded-r-none" id="height" placeholder="cm" min="100" max="250" required>
+                                <button type="button" class="bg-steel-blue/30 text-white px-4 rounded-r-lg border border-l-0 border-steel-gold/30" onclick="toggleHeightUnit()">in</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-2">Weight</label>
+                            <div class="flex">
+                                <input type="number" class="form-input bg-steel-navy rounded-r-none" id="weight" placeholder="kg" min="30" max="200" required>
+                                <button type="button" class="bg-steel-blue/30 text-white px-4 rounded-r-lg border border-l-0 border-steel-gold/30" onclick="toggleWeightUnit()">lbs</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-2">Activity Level</label>
+                            <select class="form-input bg-steel-navy" id="activity" required>
+                                <option value="">Select Activity Level</option>
+                                <option value="1.2">Sedentary (little or no exercise)</option>
+                                <option value="1.375">Lightly active (light exercise 1-3 days/week)</option>
+                                <option value="1.55">Moderately active (moderate exercise 3-5 days/week)</option>
+                                <option value="1.725">Very active (hard exercise 6-7 days/week)</option>
+                                <option value="1.9">Extra active (very hard exercise & physical job)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-2">Goal</label>
+                            <select class="form-input bg-steel-navy" id="goal" required>
+                                <option value="">Select Goal</option>
+                                <option value="lose">Weight Loss</option>
+                                <option value="maintain">Maintenance</option>
+                                <option value="gain">Muscle Gain</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="w-full bg-steel-gold text-steel-dark font-bold px-8 py-4 rounded-full hover:scale-105 transition-all duration-300 mb-8">
+                        Calculate My Calories
+                    </button>
+                </form>
+
+                <div id="results" class="hidden observer-fade">
+                    <div class="result-card p-8 rounded-2xl mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-steel-gold text-center">YOUR DAILY CALORIE NEEDS</h3>
+                        
+                        <div class="grid md:grid-cols-3 gap-6 mb-8">
+                            <div class="text-center p-6 bg-steel-dark/50 rounded-xl border border-steel-gold/30">
+                                <div class="text-3xl font-bold text-steel-gold" id="maintenance-calories">0</div>
+                                <div class="text-sm text-gray-300">Maintenance Calories</div>
+                            </div>
+                            <div class="text-center p-6 bg-steel-dark/50 rounded-xl border border-steel-gold/30">
+                                <div class="text-3xl font-bold text-steel-gold" id="weight-loss-calories">0</div>
+                                <div class="text-sm text-gray-300">Weight Loss Calories</div>
+                            </div>
+                            <div class="text-center p-6 bg-steel-dark/50 rounded-xl border border-steel-gold/30">
+                                <div class="text-3xl font-bold text-steel-gold" id="muscle-gain-calories">0</div>
+                                <div class="text-sm text-gray-300">Muscle Gain Calories</div>
+                            </div>
+                        </div>
+
+                        <div class="mb-6">
+                            <h4 class="text-xl font-bold mb-4 text-steel-gold">Macronutrient Breakdown</h4>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="bg-steel-navy/40 p-4 rounded-lg">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-steel-gold">Protein</span>
+                                        <span class="font-bold" id="protein-grams">0g</span>
+                                    </div>
+                                    <div class="w-full bg-steel-dark rounded-full h-2.5">
+                                        <div class="bg-steel-gold h-2.5 rounded-full" id="protein-bar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                <div class="bg-steel-navy/40 p-4 rounded-lg">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-steel-gold">Carbs</span>
+                                        <span class="font-bold" id="carbs-grams">0g</span>
+                                    </div>
+                                    <div class="w-full bg-steel-dark rounded-full h-2.5">
+                                        <div class="bg-steel-blue h-2.5 rounded-full" id="carbs-bar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                <div class="bg-steel-navy/40 p-4 rounded-lg">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-steel-gold">Fats</span>
+                                        <span class="font-bold" id="fats-grams">0g</span>
+                                    </div>
+                                    <div class="w-full bg-steel-dark rounded-full h-2.5">
+                                        <div class="bg-steel-light h-2.5 rounded-full" id="fats-bar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <p class="text-gray-300 mb-6">For personalized nutrition coaching tailored to your goals, book a consultation with Coach Steele.</p>
+                            <a href="https://calendly.com/coachedbysteele/consultation-call?fbclid=PAZXh0bgNhZW0CMTEAAad9rOV0GlpJKakZFg93ybtGy_euVReun-wHuDDbam_VYNL4tBIfKntyNkNhyQ_aem_pPz6ctVwYvgeS9ehlfBhLQ&month=2025-08" target="_blank"
+                               class="inline-block bg-gradient-to-r from-steel-gold to-steel-light text-steel-dark font-bold px-8 py-3 rounded-full hover:scale-105 transition-all duration-300">
+                                Book Free Consultation
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <div class="flex items-center space-x-4 mb-6">
+                        <div class="logo-container" style="width: 60px; height: 60px;">
+                            <svg class="logo-figure" style="width: 40px; height: 40px;" viewBox="0 0 100 100" fill="none">
+                                <img src="steele2.jfif">
+                            </svg>
+                        </div>
+                        <div class="font-title text-2xl font-bold text-steel-gold">
+                            COACHED BY STEELE
+                        </div>
+                    </div>
+                    <p class="text-gray-400">
+                        Helping you build sustainable fitness and nutrition habits that last a lifetime.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold text-steel-gold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html" class="text-gray-400 hover:text-steel-gold transition-colors">Home</a></li>
+                        <li><a href="index.html#about" class="text-gray-400 hover:text-steel-gold transition-colors">About</a></li>
+                        <li><a href="index.html#services" class="text-gray-400 hover:text-steel-gold transition-colors">Services</a></li>
+                        <li><a href="testinomials.html" class="text-gray-400 hover:text-steel-gold transition-colors">Testimonials</a></li>
+                        <li><a href="calculator.html" class="text-gray-400 hover:text-steel-gold transition-colors">Calorie Calculator</a></li>
+                        <li><a href="index.html#contact" class="text-gray-400 hover:text-steel-gold transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold text-steel-gold mb-4">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="index.html#services" class="text-gray-400 hover:text-steel-gold transition-colors">1-on-1 Coaching</a></li>
+                        <li><a href="index.html#services" class="text-gray-400 hover:text-steel-gold transition-colors">Online Coaching</a></li>
+                        <li><a href="calculator.html" class="text-gray-400 hover:text-steel-gold transition-colors">Nutrition Planning</a></li>
+                        <li><a href="calculator.html" class="text-gray-400 hover:text-steel-gold transition-colors">Custom Workouts</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold text-steel-gold mb-4">Contact Info</h4>
+                    <ul class="space-y-3 text-gray-400">
+                        
+                        <li class="flex items-start">
+                            <svg class="w-5 h-5 text-steel-gold mr-3 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                            coachedbysteele@gmail.com
+                        </li>
+                         <div class="flex justify-start space-x-6 mt-12">
+                        <a href="https://www.instagram.com/coached.by.steele" target="_blank"
+                           class="w-12 h-12 bg-gradient-to-r from-steel-gold to-steel-light rounded-full flex items-center justify-center hover:scale-110 transition-transform">
+                            <svg class="w-6 h-6 text-steel-dark" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                            </svg>
+                        </a>
+                        <a href="https://www.facebook.com/share/15563BipTs/" target="_blank"
+                           class="w-12 h-12 bg-gradient-to-r from-steel-gold to-steel-light rounded-full flex items-center justify-center hover:scale-110 transition-transform">
+                            <svg class="w-6 h-6 text-steel-dark" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                        </a>
+                        <a href="https://www.tiktok.com/@coachedbysteele" target="_blank"
+                           class="w-12 h-12 bg-gradient-to-r from-steel-gold to-steel-light rounded-full flex items-center justify-center hover:scale-110 transition-transform">
+                            <svg class="w-6 h-6 text-steel-dark" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-.88-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
+                            </svg>
+                        </a>
+                    </div>
+                    </ul>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm mb-4 md:mb-0">© 2024 Coached by Steele. All rights reserved.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-500 hover:text-steel-gold transition-colors">Privacy Policy</a>
+                    <a href="#" class="text-gray-500 hover:text-steel-gold transition-colors">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.observer-fade').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Mobile menu toggle
+        const mobileMenuButton = document.querySelector('button.md\\:hidden');
+        const mobileMenu = document.createElement('div');
+        mobileMenu.className = 'md:hidden fixed top-0 left-0 w-full h-full steel-gradient z-40 transform -translate-x-full transition-transform duration-300';
+        mobileMenu.innerHTML = `
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-8">
+                    <div class="font-title text-2xl font-bold text-steel-gold">COACHED BY STEELE</div>
+                    <button id="close-menu" class="text-white">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <div class="space-y-6">
+                    <a href="index.html" class="block text-2xl text-white hover:text-steel-gold">Home</a>
+                    <a href="index.html#about" class="block text-2xl text-white hover:text-steel-gold">About</a>
+                    <a href="index.html#services" class="block text-2xl text-white hover:text-steel-gold">Services</a>
+                    <a href="testinomials.html" class="block text-2xl text-white hover:text-steel-gold">Testimonials</a>
+                    <a href="calculator.html" class="block text-2xl text-steel-gold">Calorie Calculator</a>
+                    <a href="index.html#contact" class="block text-2xl text-white hover:text-steel-gold">Contact</a>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(mobileMenu);
+
+        mobileMenuButton?.addEventListener('click', () => {
+            mobileMenu.classList.remove('-translate-x-full');
+        });
+
+        document.getElementById('close-menu')?.addEventListener('click', () => {
+            mobileMenu.classList.add('-translate-x-full');
+        });
+
+        // Close mobile menu when clicking on links
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('-translate-x-full');
+            });
+        });
+
+        // Calorie Calculator Logic
+        let heightInCm = true;
+        let weightInKg = true;
+
+        function toggleHeightUnit() {
+            const heightInput = document.getElementById('height');
+            const heightValue = parseFloat(heightInput.value);
+            
+            if (heightInCm && !isNaN(heightValue)) {
+                // Convert cm to inches
+                heightInput.value = (heightValue / 2.54).toFixed(1);
+                heightInput.placeholder = "in";
+                document.querySelector('button[onclick="toggleHeightUnit()"]').textContent = "cm";
+            } else if (!heightInCm && !isNaN(heightValue)) {
+                // Convert inches to cm
+                heightInput.value = (heightValue * 2.54).toFixed(1);
+                heightInput.placeholder = "cm";
+                document.querySelector('button[onclick="toggleHeightUnit()"]').textContent = "in";
+            } else {
+                // No value, just toggle placeholder
+                if (heightInCm) {
+                    heightInput.placeholder = "in";
+                    document.querySelector('button[onclick="toggleHeightUnit()"]').textContent = "cm";
+                } else {
+                    heightInput.placeholder = "cm";
+                    document.querySelector('button[onclick="toggleHeightUnit()"]').textContent = "in";
+                }
+            }
+            
+            heightInCm = !heightInCm;
+        }
+
+        function toggleWeightUnit() {
+            const weightInput = document.getElementById('weight');
+            const weightValue = parseFloat(weightInput.value);
+            
+            if (weightInKg && !isNaN(weightValue)) {
+                // Convert kg to lbs
+                weightInput.value = (weightValue * 2.20462).toFixed(1);
+                weightInput.placeholder = "lbs";
+                document.querySelector('button[onclick="toggleWeightUnit()"]').textContent = "kg";
+            } else if (!weightInKg && !isNaN(weightValue)) {
+                // Convert lbs to kg
+                weightInput.value = (weightValue / 2.20462).toFixed(1);
+                weightInput.placeholder = "kg";
+                document.querySelector('button[onclick="toggleWeightUnit()"]').textContent = "lbs";
+            } else {
+                // No value, just toggle placeholder
+                if (weightInKg) {
+                    weightInput.placeholder = "lbs";
+                    document.querySelector('button[onclick="toggleWeightUnit()"]').textContent = "kg";
+                } else {
+                    weightInput.placeholder = "kg";
+                    document.querySelector('button[onclick="toggleWeightUnit()"]').textContent = "lbs";
+                }
+            }
+            
+            weightInKg = !weightInKg;
+        }
+
+        document.getElementById('calorie-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const gender = document.getElementById('gender').value;
+            const age = parseFloat(document.getElementById('age').value);
+            let height = parseFloat(document.getElementById('height').value);
+            let weight = parseFloat(document.getElementById('weight').value);
+            const activity = parseFloat(document.getElementById('activity').value);
+            const goal = document.getElementById('goal').value;
+            
+            // Convert units if needed
+            if (!heightInCm) height = height * 2.54; // inches to cm
+            if (!weightInKg) weight = weight / 2.20462; // lbs to kg
+            
+            // Calculate BMR (Mifflin-St Jeor Equation)
+            let bmr;
+            if (gender === 'male') {
+                bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
+            } else {
+                bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
+            }
+            
+            // Calculate TDEE
+            const tdee = bmr * activity;
+            
+            // Calculate goal calories
+            const weightLossCalories = Math.round(tdee * 0.85); // 15% deficit
+            const muscleGainCalories = Math.round(tdee * 1.15); // 15% surplus
+            
+            // Calculate macronutrients (40% carbs, 30% protein, 30% fats)
+            const proteinGrams = Math.round((tdee * 0.3) / 4);
+            const carbsGrams = Math.round((tdee * 0.4) / 4);
+            const fatsGrams = Math.round((tdee * 0.3) / 9);
+            
+            // Display results
+            document.getElementById('maintenance-calories').textContent = Math.round(tdee);
+            document.getElementById('weight-loss-calories').textContent = weightLossCalories;
+            document.getElementById('muscle-gain-calories').textContent = muscleGainCalories;
+            
+            document.getElementById('protein-grams').textContent = proteinGrams + 'g';
+            document.getElementById('carbs-grams').textContent = carbsGrams + 'g';
+            document.getElementById('fats-grams').textContent = fatsGrams + 'g';
+            
+            // Animate macronutrient bars
+            setTimeout(() => {
+                document.getElementById('protein-bar').style.width = '100%';
+                document.getElementById('carbs-bar').style.width = '100%';
+                document.getElementById('fats-bar').style.width = '100%';
+            }, 100);
+            
+            // Show results
+            document.getElementById('results').classList.remove('hidden');
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
