@@ -15,7 +15,7 @@ export default async function handler(req, res) {
       port: 465,
       secure: true, // use SSL
       auth: {
-        user: "coachedbysteele@gmail.com",
+        user: "mustafaprogrammer786@gmail.com",
         pass: process.env.GMAIL_APP_PASSWORD, // App password from Google
       },
     });
