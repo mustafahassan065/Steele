@@ -9,9 +9,11 @@ export default async function handler(req, res) {
   const { firstName, lastName, email, phone, service, message } = req.body;
 
   try {
-    // Gmail SMTP transport
+    // ✅ Stable Gmail SMTP transport (instead of service: "gmail")
     let transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true, // use SSL
       auth: {
         user: "coachedbysteele@gmail.com",
         pass: process.env.GMAIL_APP_PASSWORD, // App password from Google
@@ -34,6 +36,7 @@ export default async function handler(req, res) {
 
     res.status(200).json({ success: true, message: "Email sent successfully!" });
   } catch (err) {
+    console.error("Email error:", err); // 🚨 Vercel logs میں exact error دکھائے گا
     res.status(500).json({ error: err.message });
   }
 }
